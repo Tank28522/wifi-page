@@ -6,25 +6,55 @@
   <style>
     body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
     #password { display: none; font-size: 20px; margin-top: 20px; color: green; }
-    button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+    #btn { padding: 10px 20px; font-size: 18px; cursor: not-allowed; background: gray; color: white; border: none; }
+    #btn.enabled { cursor: pointer; background: green; }
+    #msg { margin-top: 15px; color: red; }
   </style>
 </head>
 <body>
   <h2>欢迎使用本店 WiFi</h2>
-  <p>请先观看广告，然后获取 WiFi 密码。</p>
+  <p>请先观看广告，广告加载成功并等待倒计时结束后才可以获取 WiFi 密码。</p>
 
-  <!-- 这里可以放广告位 -->
-  <img src="https://via.placeholder.com/300x250?text=广告位" alt="广告" />
+  <!-- 模拟广告（可替换为真实广告代码，比如 Google AdSense） -->
+  <img id="ad" src="https://via.placeholder.com/300x250?text=广告位" alt="广告" />
+
+  <div id="msg">广告加载中，请稍候...</div>
 
   <br><br>
-  <button onclick="showPassword()">我已看完广告</button>
+  <button id="btn" disabled>请等待广告加载...</button>
 
   <div id="password">WiFi 密码：12345678</div>
 
   <script>
-    function showPassword() {
-      document.getElementById("password").style.display = "block";
-    }
+    let waitTime = 10; // 倒计时秒数
+    const btn = document.getElementById("btn");
+    const pwd = document.getElementById("password");
+    const msg = document.getElementById("msg");
+    const ad = document.getElementById("ad");
+
+    // 当广告加载成功时触发
+    ad.onload = () => {
+      msg.innerText = "广告已加载，开始倒计时...";
+      btn.innerText = `请等待 ${waitTime} 秒...`;
+      let timer = setInterval(() => {
+        waitTime--;
+        btn.innerText = `请等待 ${waitTime} 秒...`;
+        if (waitTime <= 0) {
+          clearInterval(timer);
+          btn.disabled = false;
+          btn.classList.add("enabled");
+          btn.innerText = "我已看完广告，显示密码";
+          btn.onclick = () => {
+            pwd.style.display = "block";
+          };
+        }
+      }, 1000);
+    };
+
+    // 如果广告加载失败
+    ad.onerror = () => {
+      msg.innerText = "广告加载失败，请刷新页面重试。";
+    };
   </script>
 </body>
 </html>

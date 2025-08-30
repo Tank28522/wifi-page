@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>WiFi 连接</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    h2 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    #ad {
+      margin: 15px 0;
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    #msg {
+      margin: 10px 0;
+      color: #666;
+    }
+    #btn {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: gray;
+      color: white;
+      cursor: not-allowed;
+      transition: 0.3s;
+      width: 100%;
+    }
+    #btn.enabled {
+      background: #28a745;
+      cursor: pointer;
+    }
+    #password {
+      display: none;
+      font-size: 20px;
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+    }
+    #copyBtn {
+      display: none;
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 14px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>欢迎使用本店 WiFi</h2>
+    <p>请先观看广告，广告加载 + 倒计时完成后才能获取 WiFi 密码。</p>
+
+    <!-- 模拟广告（这里可换成 Google/百度广告代码） -->
+    <img id="ad" src="https://via.placeholder.com/300x250?text=广告位" alt="广告">
+
+    <div id="msg">广告加载中，请稍候...</div>
+
+    <button id="btn" disabled>请等待广告加载...</button>
+
+    <div id="password">WiFi 密码：12345678</div>
+    <button id="copyBtn">复制密码</button>
+  </div>
+
+  <script>
+    let waitTime = 10; // 倒计时秒数
+    const btn = document.getElementById("btn");
+    const pwd = document.getElementById("password");
+    const msg = document.getElementById("msg");
+    const ad = document.getElementById("ad");
+    const copyBtn = document.getElementById("copyBtn");
+
+    // 当广告加载成功时触发
+    ad.onload = () => {
+      msg.innerText = "广告已加载，开始倒计时...";
+      btn.innerText = `请等待 ${waitTime} 秒...`;
+      let timer = setInterval(() => {
+        waitTime--;
+        btn.innerText = `请等待 ${waitTime} 秒...`;
+        if (waitTime <= 0) {
+          clearInterval(timer);
+          btn.disabled = false;
+          btn.classList.add("enabled");
+          btn.innerText = "我已看完广告，显示密码";
+          btn.onclick = () => {
+            pwd.style.display = "block";
+            copyBtn.style.display = "inline-block";
+          };
+        }
+      }, 1000);
+    };
+
+    // 广告加载失败
+    ad.onerror = () => {
+      msg.innerText = "广告加载失败，请刷新页面重试。";
+    };
+
+    // 一键复制密码
+    copyBtn.onclick = () => {
+      const text = pwd.innerText.replace("WiFi 密码：", "");
+      navigator.clipboard.writeText(text).then(() => {
+        alert("WiFi 密码已复制到剪贴板！");
+      });
+    };
+  </script>
+</body>
+</html>
